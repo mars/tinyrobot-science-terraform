@@ -2,7 +2,7 @@ terraform {
   backend "s3" {
     bucket         = "tinyrobot-science-terraform-dev"
     key            = "terraform.tfstate"
-    region         = "us-west-2"
+    region         = "us-east-1"
     dynamodb_table = "tinyrobot_science_terraform_dev"
   }
 }
@@ -15,7 +15,8 @@ provider "heroku" {
 
 # Create Heroku apps for staging and production
 resource "heroku_app" "api_staging" {
-  name = "tinyrobot-api-staging"
+  name   = "tinyrobot-api-staging"
+  region = "us"
 
   organization = {
     name = "${var.heroku_team_name}"
@@ -23,8 +24,9 @@ resource "heroku_app" "api_staging" {
 }
 
 resource "heroku_app" "api_production" {
-  name = "tinyrobot-api-production"
-  acm  = true
+  name   = "tinyrobot-api-production"
+  region = "us"
+  acm    = true
 
   organization = {
     name = "${var.heroku_team_name}"
@@ -59,7 +61,8 @@ resource "heroku_pipeline_coupling" "api_production" {
 
 # Create Heroku apps for staging and production
 resource "heroku_app" "ui_staging" {
-  name = "tinyrobot-ui-staging"
+  name   = "tinyrobot-ui-staging"
+  region = "us"
 
   organization = {
     name = "${var.heroku_team_name}"
@@ -67,8 +70,9 @@ resource "heroku_app" "ui_staging" {
 }
 
 resource "heroku_app" "ui_production" {
-  name = "tinyrobot-ui-production"
-  acm  = true
+  name   = "tinyrobot-ui-production"
+  region = "us"
+  acm    = true
 
   organization = {
     name = "${var.heroku_team_name}"
@@ -83,7 +87,7 @@ resource "heroku_domain" "tinyrobot_science" {
 
 # Create a Heroku pipeline
 resource "heroku_pipeline" "tinyrobot_ui" {
-  name = "ui"
+  name = "web-ui"
 }
 
 # Couple apps to different pipeline stages
