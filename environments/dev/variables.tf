@@ -15,3 +15,23 @@ variable "ui_host_name" {
   type        = "string"
   default     = "tinyrobot.science"
 }
+
+variable "api_slug_staging" {
+  description = "Heroku slug ID for API app"
+  type        = "string"
+}
+
+variable "api_slug_production" {
+  description = "Heroku slug ID for API app"
+  type        = "string"
+}
+
+variable "ui_slug_staging" {
+  description = "Heroku slug ID for web UI app"
+  type        = "string"
+}
+
+variable "ui_slug_production" {
+  description = "Heroku slug ID for web UI app"
+  type        = "string"
+}
