@@ -15,7 +15,7 @@ provider "heroku" {
 
 # Create Heroku apps for staging and production
 resource "heroku_app" "api_staging" {
-  name   = "tinyrobot-api-staging"
+  name   = "${var.heroku_team_name}-api-staging"
   region = "us"
 
   organization = {
@@ -24,7 +24,7 @@ resource "heroku_app" "api_staging" {
 }
 
 resource "heroku_app" "api_production" {
-  name   = "tinyrobot-api-production"
+  name   = "${var.heroku_team_name}-api-production"
   region = "us"
   acm    = true
 
@@ -34,26 +34,26 @@ resource "heroku_app" "api_production" {
 }
 
 # Associate a custom domain for production
-resource "heroku_domain" "api_tinyrobot_science" {
+resource "heroku_domain" "api" {
   app      = "${heroku_app.api_production.name}"
   hostname = "${var.api_host_name}"
 }
 
 # Create a Heroku pipeline
-resource "heroku_pipeline" "tinyrobot_api" {
+resource "heroku_pipeline" "api" {
   name = "api"
 }
 
 # Couple apps to different pipeline stages
 resource "heroku_pipeline_coupling" "api_staging" {
   app      = "${heroku_app.api_staging.name}"
-  pipeline = "${heroku_pipeline.tinyrobot_api.id}"
+  pipeline = "${heroku_pipeline.api.id}"
   stage    = "staging"
 }
 
 resource "heroku_pipeline_coupling" "api_production" {
   app      = "${heroku_app.api_production.name}"
-  pipeline = "${heroku_pipeline.tinyrobot_api.id}"
+  pipeline = "${heroku_pipeline.api.id}"
   stage    = "production"
 }
 
@@ -61,7 +61,7 @@ resource "heroku_pipeline_coupling" "api_production" {
 
 # Create Heroku apps for staging and production
 resource "heroku_app" "ui_staging" {
-  name   = "tinyrobot-ui-staging"
+  name   = "${var.heroku_team_name}-ui-staging"
   region = "us"
 
   organization = {
@@ -70,7 +70,7 @@ resource "heroku_app" "ui_staging" {
 }
 
 resource "heroku_app" "ui_production" {
-  name   = "tinyrobot-ui-production"
+  name   = "${var.heroku_team_name}-ui-production"
   region = "us"
   acm    = true
 
@@ -80,25 +80,25 @@ resource "heroku_app" "ui_production" {
 }
 
 # Associate a custom domain for production
-resource "heroku_domain" "tinyrobot_science" {
+resource "heroku_domain" "ui" {
   app      = "${heroku_app.ui_production.name}"
   hostname = "${var.ui_host_name}"
 }
 
 # Create a Heroku pipeline
-resource "heroku_pipeline" "tinyrobot_ui" {
+resource "heroku_pipeline" "ui" {
   name = "web-ui"
 }
 
 # Couple apps to different pipeline stages
 resource "heroku_pipeline_coupling" "ui_staging" {
   app      = "${heroku_app.ui_staging.name}"
-  pipeline = "${heroku_pipeline.tinyrobot_ui.id}"
+  pipeline = "${heroku_pipeline.ui.id}"
   stage    = "staging"
 }
 
 resource "heroku_pipeline_coupling" "ui_production" {
   app      = "${heroku_app.ui_production.name}"
-  pipeline = "${heroku_pipeline.tinyrobot_ui.id}"
+  pipeline = "${heroku_pipeline.ui.id}"
   stage    = "production"
 }
