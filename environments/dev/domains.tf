@@ -3,7 +3,7 @@ resource "heroku_domain" "api" {
   hostname = "${var.api_host_name}"
 }
 
-resource "heroku_domain" "ui" {
-  app      = "${heroku_app.ui_production.name}"
+resource "heroku_domain" "web_ui" {
+  app      = "${heroku_app.web_ui_production.name}"
   hostname = "${var.ui_host_name}"
 }

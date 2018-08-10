@@ -3,5 +3,5 @@ output "api_cname" {
 }
 
 output "web_ui_cname" {
-  value = "${heroku_domain.ui.cname}"
+  value = "${heroku_domain.web_ui.cname}"
 }

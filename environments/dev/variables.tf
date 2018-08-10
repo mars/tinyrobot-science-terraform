@@ -26,12 +26,12 @@ variable "api_slug_production" {
   type        = "string"
 }
 
-variable "ui_slug_staging" {
+variable "web_ui_slug_staging" {
   description = "Heroku slug ID for web UI app"
   type        = "string"
 }
 
-variable "ui_slug_production" {
+variable "web_ui_slug_production" {
   description = "Heroku slug ID for web UI app"
   type        = "string"
 }

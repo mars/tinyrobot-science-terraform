@@ -1,20 +1,24 @@
 # Extract slug IDs based on each app's pipeline coupling.
-# Requires one argument: the pipeline's latest-releases data
+# Requires two arguments:
+# 1. the slug name to identify it in variable `TF_VARS_*_slug`
+# 2. the pipeline's latest-releases data
 function capture_slug_ids {
+  slug_name=$1
+  releases_data=$2
   if [ ! -z "$1" ]
   then
-    api_pipeline_apps=(`echo $1 | jq -r 'map(.app.id) | unique | @sh'`)
-    for ix in ${!api_pipeline_apps[*]}
+    pipeline_apps=(`echo $releases_data | jq -r 'map(.app.id) | unique | @sh'`)
+    for ix in ${!pipeline_apps[*]}
     do
-      eval app_id=${api_pipeline_apps[$ix]} # remove single-quotes
+      eval app_id=${pipeline_apps[$ix]} # remove single-quotes
       url="https://api.heroku.com/apps/$app_id/pipeline-couplings"
       >&2 echo "🔸 GET $url"
       coupling_stage=`curl -sS --fail $url -H "Authorization: Bearer $HEROKU_API_KEY" -H "Accept: application/vnd.heroku+json; version=3" -H "Content-Type: application/json" | jq -r '.stage'`
       if [ ! -z "$coupling_stage" ]
       then
-        slug_id=`echo "$1" | jq --arg app_id $app_id -r '.[] | select(.app.id == $app_id) | .slug.id'`
-        echo "🔹 TF_VAR_api_slug_$coupling_stage=$slug_id"
-        eval "export TF_VAR_api_slug_$coupling_stage=$slug_id"
+        slug_id=`echo "$releases_data" | jq --arg app_id $app_id -r '.[] | select(.app.id == $app_id) | .slug.id'`
+        echo "🔹 TF_VAR_${slug_name}_slug_${coupling_stage}=${slug_id}"
+        eval "export TF_VAR_${slug_name}_slug_${coupling_stage}=${slug_id}"
       fi
     done
   fi
@@ -46,5 +50,5 @@ api_build_pipeline_data=`curl -sS --fail "https://api.heroku.com/pipelines/$API_
 web_ui_build_pipeline_data=`curl -sS --fail "https://api.heroku.com/pipelines/$WEB_UI_BUILD_PIPELINE/latest-releases" -H "Authorization: Bearer $HEROKU_API_KEY" -H "Accept: application/vnd.heroku+json; version=3.pipelines" -H "Content-Type: application/json" -H "Range: version ..; order=desc, max=10"`
 
 # Extract slug IDs based on each app's pipeline coupling
-capture_slug_ids "$api_build_pipeline_data"
-capture_slug_ids "$web_ui_build_pipeline_data"
+capture_slug_ids "api" "$api_build_pipeline_data"
+capture_slug_ids "web_ui" "$web_ui_build_pipeline_data"

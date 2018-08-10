@@ -10,7 +10,7 @@ resource "heroku_app" "api_production" {
   }
 }
 
-resource "heroku_addon" "papertrail_ui_production" {
+resource "heroku_addon" "papertrail_web_ui_production" {
   app  = "${heroku_app.api_production.name}"
   plan = "papertrail:choklad"
 }
@@ -30,7 +30,7 @@ resource "heroku_formation" "api_production" {
 
 ### UI
 
-resource "heroku_app" "ui_production" {
+resource "heroku_app" "web_ui_production" {
   name   = "${var.heroku_team_name}-ui-production"
   region = "us"
   acm    = true
@@ -45,19 +45,19 @@ resource "heroku_app" "ui_production" {
 }
 
 resource "heroku_addon" "papertrail_api_production" {
-  app  = "${heroku_app.ui_production.name}"
+  app  = "${heroku_app.web_ui_production.name}"
   plan = "papertrail:choklad"
 }
 
-resource "heroku_app_release" "ui_production" {
-  app     = "${heroku_app.ui_production.name}"
-  slug_id = "${var.ui_slug_production}"
+resource "heroku_app_release" "web_ui_production" {
+  app     = "${heroku_app.web_ui_production.name}"
+  slug_id = "${var.web_ui_slug_production}"
 }
 
-resource "heroku_formation" "ui_production" {
-  app        = "${heroku_app.ui_production.name}"
+resource "heroku_formation" "web_ui_production" {
+  app        = "${heroku_app.web_ui_production.name}"
   type       = "web"
   quantity   = 2
   size       = "standard-1x"
-  depends_on = ["heroku_app_release.ui_production"]
+  depends_on = ["heroku_app_release.web_ui_production"]
 }

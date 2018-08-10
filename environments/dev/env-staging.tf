@@ -10,7 +10,7 @@ resource "heroku_app" "api_staging" {
   }
 }
 
-resource "heroku_addon" "papertrail_ui_staging" {
+resource "heroku_addon" "papertrail_web_ui_staging" {
   app  = "${heroku_app.api_staging.name}"
   plan = "papertrail:choklad"
 }
@@ -30,7 +30,7 @@ resource "heroku_formation" "api_staging" {
 
 ### UI
 
-resource "heroku_app" "ui_staging" {
+resource "heroku_app" "web_ui_staging" {
   name   = "${var.heroku_team_name}-ui-staging"
   region = "us"
   acm    = true
@@ -45,19 +45,19 @@ resource "heroku_app" "ui_staging" {
 }
 
 resource "heroku_addon" "papertrail_api_staging" {
-  app  = "${heroku_app.ui_staging.name}"
+  app  = "${heroku_app.web_ui_staging.name}"
   plan = "papertrail:choklad"
 }
 
-resource "heroku_app_release" "ui_staging" {
-  app     = "${heroku_app.ui_staging.name}"
-  slug_id = "${var.ui_slug_staging}"
+resource "heroku_app_release" "web_ui_staging" {
+  app     = "${heroku_app.web_ui_staging.name}"
+  slug_id = "${var.web_ui_slug_staging}"
 }
 
-resource "heroku_formation" "ui_staging" {
-  app        = "${heroku_app.ui_staging.name}"
+resource "heroku_formation" "web_ui_staging" {
+  app        = "${heroku_app.web_ui_staging.name}"
   type       = "web"
   quantity   = 1
   size       = "standard-1x"
-  depends_on = ["heroku_app_release.ui_staging"]
+  depends_on = ["heroku_app_release.web_ui_staging"]
 }
