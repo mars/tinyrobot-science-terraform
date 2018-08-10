@@ -30,21 +30,27 @@ Once the setup is complete, we'll now switch to the application's Terraform envi
   heroku authorizations:create --description tinyrobot-science --short
   export HEROKU_API_KEY=xxxxx
   ```
+* Capture the current pipeline releases' slug IDs as `TF_VAR_` variables. The Pipeline UUIDs can be found by visiting each pipeline used to build the slugs in the [Heroku Dashboard](https://dashboard.heroku.com/) and copying them from the page address/URL:
+
+  ```bash
+  export API_BUILD_PIPELINE=2f557b76-d685-452a-8651-9a6295a2a032
+  export WEB_UI_BUILD_PIPELINE=26a3ecbf-8188-43ae-b0fe-be2d9e9fe26f
+  source bin/pipeline-slug-ids.sh
+  ```
+* Provision the configuration:
+
+  ```bash
+  cd environments/dev
+  terraform init
+  terraform plan
+  terraform apply
+  ```
 * Use `terraform show` to see the cname targets for the custom domain names and configure them (manually) in DNS.
+* To re-deploy apps based on the Pipeline releases:
 
-```bash
-cd environments/dev
-
-# These are the apps used to build the slugs.
-export API_SLUG_BUILD_APP=tinyrobot-science-api-build
-export UI_SLUG_BUILD_APP=tinyrobot-science-web-ui-build
-# Now fetch the most recent slug IDs as both staging & production.
-export TF_VAR_api_slug_staging=`curl "https://api.heroku.com/apps/$API_SLUG_BUILD_APP/releases" -H "Authorization: Bearer $HEROKU_API_KEY" -H "Accept: application/vnd.heroku+json; version=3" -H "Content-Type: application/json" -H "Range: version ..; max=1, order=desc" | jq -r .[0].slug.id`
-export TF_VAR_api_slug_production=$TF_VAR_api_slug_staging
-export TF_VAR_ui_slug_staging=`curl "https://api.heroku.com/apps/$UI_SLUG_BUILD_APP/releases" -H "Authorization: Bearer $HEROKU_API_KEY" -H "Accept: application/vnd.heroku+json; version=3" -H "Content-Type: application/json" -H "Range: version ..; max=1, order=desc" | jq -r .[0].slug.id`
-export TF_VAR_ui_slug_production=$TF_VAR_ui_slug_staging
-
-terraform init
-terraform plan
-terraform apply
-```
+  ```bash
+  cd environments/dev
+  source ../../bin/pipeline-slug-ids.sh
+  terraform plan
+  terraform apply
+  ```

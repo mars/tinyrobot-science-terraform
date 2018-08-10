@@ -15,12 +15,6 @@ resource "heroku_addon" "papertrail_ui_production" {
   plan = "papertrail:choklad"
 }
 
-resource "heroku_pipeline_coupling" "api_production" {
-  app      = "${heroku_app.api_production.name}"
-  pipeline = "${heroku_pipeline.api.id}"
-  stage    = "production"
-}
-
 resource "heroku_app_release" "api_production" {
   app     = "${heroku_app.api_production.name}"
   slug_id = "${var.api_slug_production}"
@@ -53,12 +47,6 @@ resource "heroku_app" "ui_production" {
 resource "heroku_addon" "papertrail_api_production" {
   app  = "${heroku_app.ui_production.name}"
   plan = "papertrail:choklad"
-}
-
-resource "heroku_pipeline_coupling" "ui_production" {
-  app      = "${heroku_app.ui_production.name}"
-  pipeline = "${heroku_pipeline.ui.id}"
-  stage    = "production"
 }
 
 resource "heroku_app_release" "ui_production" {

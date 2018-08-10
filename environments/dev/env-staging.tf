@@ -15,12 +15,6 @@ resource "heroku_addon" "papertrail_ui_staging" {
   plan = "papertrail:choklad"
 }
 
-resource "heroku_pipeline_coupling" "api_staging" {
-  app      = "${heroku_app.api_staging.name}"
-  pipeline = "${heroku_pipeline.api.id}"
-  stage    = "staging"
-}
-
 resource "heroku_app_release" "api_staging" {
   app     = "${heroku_app.api_staging.name}"
   slug_id = "${var.api_slug_staging}"
@@ -53,12 +47,6 @@ resource "heroku_app" "ui_staging" {
 resource "heroku_addon" "papertrail_api_staging" {
   app  = "${heroku_app.ui_staging.name}"
   plan = "papertrail:choklad"
-}
-
-resource "heroku_pipeline_coupling" "ui_staging" {
-  app      = "${heroku_app.ui_staging.name}"
-  pipeline = "${heroku_pipeline.ui.id}"
-  stage    = "staging"
 }
 
 resource "heroku_app_release" "ui_staging" {
