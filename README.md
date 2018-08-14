@@ -2,6 +2,12 @@
 
 *Based on [Confluent's Terraform config with S3 state storage](https://github.com/confluentinc/terraform-state-s3).*
 
+### Part of a reference suite
+
+| Terraform config | [Web UI](https://github.com/mars/tinyrobot-science-web-ui) | [API](https://github.com/mars/tinyrobot-science-api) |
+|-----------|------------|---------|
+| infrastructure (this repo) | front-end app | backend app |
+
 ## Setup
 
 First we'll provision Amazon S3 & DynamoDB for Terraform's remote state store, so that team members may collaborate free of conflicts:
