@@ -36,27 +36,30 @@ Once the setup is complete, we'll now switch to the application's Terraform envi
   heroku authorizations:create --description tinyrobot-science --short
   export HEROKU_API_KEY=xxxxx
   ```
-* Capture the current pipeline releases' slug IDs as `TF_VAR_` variables. The Pipeline UUIDs can be found by visiting each pipeline used to build the slugs in the [Heroku Dashboard](https://dashboard.heroku.com/) and copying them from the page address/URL:
+* Identify the build pipeline for each app. Pipeline UUIDs can be found by visiting each pipeline used to build the slugs in the [Heroku Dashboard](https://dashboard.heroku.com/) and copying them from the page address/URL:
 
   ```bash
-  export API_BUILD_PIPELINE=2f557b76-d685-452a-8651-9a6295a2a032
-  export WEB_UI_BUILD_PIPELINE=26a3ecbf-8188-43ae-b0fe-be2d9e9fe26f
-  source bin/pipeline-slug-ids.sh
+  export \
+    API_BUILD_PIPELINE=2f557b76-d685-452a-8651-9a6295a2a032 \
+    WEB_UI_BUILD_PIPELINE=26a3ecbf-8188-43ae-b0fe-be2d9e9fe26f
+  ```
+* Setup the unique identifiers for the apps. The team name & DNS host names must already be exist:
+
+  ```bash
+  export \
+    TF_VAR_heroku_team_name=tinyrobot-science \
+    TF_VAR_api_host_name=api.tinyrobot.science \
+    TF_VAR_ui_host_name=tinyrobot.science
   ```
 * Provision the configuration:
 
   ```bash
   cd environments/dev
   terraform init
-  terraform plan
-  terraform apply
-  ```
-* Use `terraform show` to see the cname targets for the custom domain names and configure them (manually) in DNS.
-* To re-deploy apps based on the Pipeline releases:
-
-  ```bash
-  cd environments/dev
+  
+  # Capture the pipelines' current Slug IDs
   source ../../bin/pipeline-slug-ids.sh
+  
   terraform plan
   terraform apply
   ```
