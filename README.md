@@ -19,24 +19,42 @@ An example collaborative microservices architecture for Heroku, based on two Ter
   * [a team](https://devcenter.heroku.com/articles/heroku-teams)
 * install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 * install [Terraform](https://terraform.io)
+* install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/installing.html)
+  * with Homebrew on macOS: `brew install awscli`
+* if adapting this example for your own project, then use your own fork of this repo wherever this repo's URL appears
+  * instead of `https://github.com/mars/tinyrobot-science-terraform` use `https://github.com/$GITHUB_USERNAME/tinyrobot-science-terraform`
 
 ## Setup
 
-First, setup Terraform's remote state store with Amazon S3 & DynamoDB, so that team members may collaborate free of conflicts:
+### Initial
 
-* Install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/installing.html)
-  * with Homebrew on macOS: `brew install awscli`
-* Create AWS IAM user with *AmazonS3FullAccess* & *AmazonDynamoDBFullAccess*
-* Run `aws configure` to set the key & secret credentials for that new IAM user
-  * ensure *Default region name* is set to same as the AWS provider region in other environments
+Setup Terraform's remote state store with Amazon S3 & DynamoDB, so that team members may collaborate free of conflicts:
 
-```bash
-git clone https://github.com/mars/tinyrobot-science-terraform
-cd tinyrobot-science-terraform/environments/dev-tfstate
-terraform init
-terraform apply
-git commit terraform.tfstate* -m 'Terraform S3 backend state'
-```
+1. Create AWS IAM user with *AmazonS3FullAccess* & *AmazonDynamoDBFullAccess*
+2. Run `aws configure` to set the key & secret credentials for that new IAM user
+    * ensure *Default region name* is set to same as the AWS provider region in other environments
+3. Run the following shell commands:
+
+    ✏️ *If adapting this example for your own project, first set your own unique names/values for the resources in [`dev-tfstate/main.tf`](environments/dev-tfstate/main.tf) & [`dev/backend.tf`](environments/dev/backend.tf)*
+
+    ```bash
+    git clone https://github.com/mars/tinyrobot-science-terraform
+    cd tinyrobot-science-terraform/environments/dev-tfstate
+    terraform init
+    terraform apply
+    git commit terraform.tfstate* -m 'Terraform S3 backend state'
+    ```
+
+### Additional collaborators
+
+1. Create AWS IAM user with full access to the bucket named in [`dev-tfstate/main.tf`](environments/dev-tfstate/main.tf)
+2. Run `aws configure` to set the key & secret credentials for that new IAM user
+3. Run the following shell commands:
+
+    ```bash
+    git clone https://github.com/mars/tinyrobot-science-terraform
+    cd tinyrobot-science-terraform/
+    ```
 
 ## Usage
 
