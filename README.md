@@ -40,8 +40,8 @@ Once the setup is complete, we'll now switch to the application's Terraform envi
 
   ```bash
   export \
-    API_BUILD_PIPELINE=2f557b76-d685-452a-8651-9a6295a2a032 \
-    WEB_UI_BUILD_PIPELINE=26a3ecbf-8188-43ae-b0fe-be2d9e9fe26f
+    BUILD_PIPELINE_API=2f557b76-d685-452a-8651-9a6295a2a032 \
+    BUILD_PIPELINE_WEB_UI=26a3ecbf-8188-43ae-b0fe-be2d9e9fe26f
   ```
 * Setup the unique identifiers for the apps. The team name & DNS host names must already be exist:
 
@@ -58,8 +58,9 @@ Once the setup is complete, we'll now switch to the application's Terraform envi
   terraform init
   
   # Capture the pipelines' current Slug IDs
-  source ../../bin/pipeline-slug-ids.sh
+  source ../../bin/pipeline-slug-ids
   
   terraform plan
   terraform apply
   ```
+* Output includes the DNS CNAME targets for the host names.
